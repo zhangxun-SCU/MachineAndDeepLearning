@@ -240,4 +240,6 @@ cython_debug/
 
 # my
 tutorial/
+pytorch/model/
+pytorch/data/
 

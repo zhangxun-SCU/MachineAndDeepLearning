@@ -3,6 +3,9 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/tutorial" />
+      <excludeFolder url="file://$MODULE_DIR$/CS224_Homework/Homework2/utils/datasets/stanfordSentimentTreebank/.ipynb_checkpoints" />
+      <excludeFolder url="file://$MODULE_DIR$/pytorch/data" />
+      <excludeFolder url="file://$MODULE_DIR$/pytorch/model" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
