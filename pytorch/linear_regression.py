@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
-
+import random
 
 # 超参数
 input_size = 1
@@ -21,6 +21,7 @@ y_train = np.array([[1.7], [2.76], [2.09], [3.19], [1.694], [1.573],
 
 # 构建模型
 model = nn.Linear(input_size, output_size)
+
 
 criterion = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)

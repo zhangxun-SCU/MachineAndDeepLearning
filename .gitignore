@@ -242,4 +242,5 @@ cython_debug/
 tutorial/
 pytorch/model/
 pytorch/data/
+pytorch/imgs/
 

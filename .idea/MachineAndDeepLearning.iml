@@ -6,8 +6,9 @@
       <excludeFolder url="file://$MODULE_DIR$/CS224_Homework/Homework2/utils/datasets/stanfordSentimentTreebank/.ipynb_checkpoints" />
       <excludeFolder url="file://$MODULE_DIR$/pytorch/data" />
       <excludeFolder url="file://$MODULE_DIR$/pytorch/model" />
+      <excludeFolder url="file://$MODULE_DIR$/pytorch/imgs" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.9 (pytorh) (3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
