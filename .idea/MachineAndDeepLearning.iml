@@ -7,8 +7,12 @@
       <excludeFolder url="file://$MODULE_DIR$/pytorch/data" />
       <excludeFolder url="file://$MODULE_DIR$/pytorch/model" />
       <excludeFolder url="file://$MODULE_DIR$/pytorch/imgs" />
+      <excludeFolder url="file://$MODULE_DIR$/aboutMusic/music" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/runs" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/run" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/dataset" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (pytorh) (3)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.10" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

@@ -72,37 +72,37 @@ class HzModel(nn.Module):
 
 model = HzModel(input_size, hidden_size).to(device)
 model.load_state_dict(torch.load("model/Hz.ckpt"))
-model.eval()
+# model.eval()
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-# loss_1 = 1.5
-# for epoch in range(num_epochs):
-#     inputs = torch.from_numpy(x).to(device)
-#     targets = torch.from_numpy(y).to(device)
-#     outputs = model(inputs)
-#     loss = criterion(outputs, targets)
-#     optimizer.zero_grad()
-#     loss.backward()
-#     optimizer.step()
-#
-#     if (epoch + 1) % 5 == 0:
-#         if loss.item() < loss_1:
-#             loss_1 = loss.item()
-#             print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f} *")
-#             torch.save(model.state_dict(), 'model/Hz.ckpt')
-#         else:
-#             print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}")
-#
-#     if epoch % 10000 == 0:
-#
-#         test = np.linspace(0, 82, 10000, dtype=np.float32).reshape([-1, 1])
-#         predicted = model(torch.from_numpy(test).to(device)).detach().cpu().numpy()
-#         fig, ax = plt.subplots()
-#         ax.scatter(x, y, c='r')
-#         ax.set_ylim(0, 5)
-#         ax.plot(test, predicted)
-#         plt.show()
+loss_1 = 1.5
+for epoch in range(num_epochs):
+    inputs = torch.from_numpy(x).to(device)
+    targets = torch.from_numpy(y).to(device)
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    if (epoch + 1) % 5 == 0:
+        if loss.item() < loss_1:
+            loss_1 = loss.item()
+            print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f} *")
+            torch.save(model.state_dict(), 'model/Hz.ckpt')
+        else:
+            print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}")
+
+    if epoch % 10000 == 0:
+
+        test = np.linspace(0, 82, 10000, dtype=np.float32).reshape([-1, 1])
+        predicted = model(torch.from_numpy(test).to(device)).detach().cpu().numpy()
+        fig, ax = plt.subplots()
+        ax.scatter(x, y, c='r')
+        ax.set_ylim(0, 5)
+        ax.plot(test, predicted)
+        plt.show()
 
 test = np.linspace(0, 82, 120, dtype=np.float32).reshape([-1, 1])
 predicted = model(torch.from_numpy(test).to(device)).detach().cpu().numpy()

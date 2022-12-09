@@ -243,4 +243,10 @@ tutorial/
 pytorch/model/
 pytorch/data/
 pytorch/imgs/
+lawTextUseCNN/data/
+lawTextUseLSTM/data/
+aboutMusic/music/
+DL/SimpleGAN/dataset/
+DL/SimpleGAN/run/
+DL/SimpleGAN/runs/
 
