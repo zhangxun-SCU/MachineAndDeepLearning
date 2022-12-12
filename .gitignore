@@ -249,4 +249,6 @@ aboutMusic/music/
 DL/SimpleGAN/dataset/
 DL/SimpleGAN/run/
 DL/SimpleGAN/runs/
+DL/SimpleGAN/model/
+DL/SimpleGAN/imgs/
 

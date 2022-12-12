@@ -11,6 +11,8 @@
       <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/runs" />
       <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/run" />
       <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/dataset" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/imgs" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/model" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -5,7 +5,7 @@ import torchvision
 import torchvision.datasets as datasets
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
-from torch.utils.tensorboard import SummaryWriter
+import os
 
 
 class Discriminator(nn.Module):
@@ -41,26 +41,35 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 lr = 3e-4
 z_dim = 64
 img_dim = 28 * 28 * 1
-batch_size = 32
-num_epochs = 50
+batch_size = 128
+num_epochs = 1000
 
 disc = Discriminator(img_dim).to(device)
 gen = Generator(z_dim, img_dim).to(device)
 fixed_noise = torch.randn((batch_size, z_dim)).to(device)
 transforms = transforms.Compose(
-    [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+    [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
 )
 
 datasets = datasets.MNIST(root="dataset/", transform=transforms, download=True)
 loader = DataLoader(datasets, batch_size=batch_size, shuffle=True)
 opt_disc = optim.Adam(disc.parameters(), lr=lr)
-opt_gen = optim.Adam(disc.parameters(), lr=lr)
+opt_gen = optim.Adam(gen.parameters(), lr=lr)
 criterion = nn.BCELoss()
-writer_fake = SummaryWriter(f"runs/GAN_MNIST/fake")
-writer_real = SummaryWriter(f"run/GAN_MNIST/real")
 step = 0
 
+
 if __name__ == "__main__":
+
+    disc_path = r'model/Discriminator.ckpt'
+    gen_path = r'model/Generator.ckpt'
+    if os.path.exists(disc_path):
+        disc.load_state_dict(torch.load(disc_path))
+        print("Discriminator loaded")
+    if os.path.exists(gen_path):
+        gen.load_state_dict(torch.load(gen_path))
+        print("Generator loaded")
+
     for epoch in range(num_epochs):
         for batch_idx, (real, _) in enumerate(loader):
             real = real.view(-1, 784).to(device)
@@ -71,7 +80,6 @@ if __name__ == "__main__":
             fake = gen(noise)
             disc_real = disc(real).view(-1)
             lossD_real = criterion(disc_real, torch.ones_like(disc_real))
-
             disc_fake = disc(fake).view(-1)
             lossD_fake = criterion(disc_fake, torch.zeros_like(disc_fake))
             lossD = (lossD_real + lossD_fake) / 2
@@ -90,14 +98,11 @@ if __name__ == "__main__":
                 print(f"Epoch [{epoch}/{num_epochs}] Loss D:{lossD:.4f} Loss G{lossG:.4f}")
                 with torch.no_grad():
                     fake = gen(fixed_noise).reshape(-1, 1, 28, 28)
-                    data = real.reshape(-1, 1, 28, 28)
+                    real = real.reshape(-1, 1, 28, 28)
                     img_grid_fake = torchvision.utils.make_grid(fake, normalize=True)
                     img_grid_real = torchvision.utils.make_grid(real, normalize=True)
-
-                    writer_fake.add_image(
-                        "Mnist Fake Images", img_grid_fake, global_step=step
-                    )
-                    writer_real.add_image(
-                        "Mnist real Images", img_grid_real, global_step=step
-                    )
                     step = step + 1
+                    torchvision.utils.save_image(img_grid_real, r'runs/real/%d.png' % step)
+                    torchvision.utils.save_image(img_grid_fake, r'runs/fake/%d.png' % step)
+                    torch.save(disc.state_dict(), disc_path)
+                    torch.save(gen.state_dict(), gen_path)
