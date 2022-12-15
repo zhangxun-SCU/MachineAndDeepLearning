@@ -246,9 +246,16 @@ pytorch/imgs/
 lawTextUseCNN/data/
 lawTextUseLSTM/data/
 aboutMusic/music/
+
+# MY  DL SimpleGAN
 DL/SimpleGAN/dataset/
 DL/SimpleGAN/run/
 DL/SimpleGAN/runs/
 DL/SimpleGAN/model/
 DL/SimpleGAN/imgs/
+
+# MY DL DCGAN
+DL/DCGAN/data/
+DL/DCGAN/output_img
+DL/DCGAN/model
 

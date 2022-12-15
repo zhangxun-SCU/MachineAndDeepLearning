@@ -24,9 +24,9 @@ class Bird(Sprite):
 
     def update(self):
         if self.rect.bottom < self.screen_rect.bottom:
-            self.y += 0.5
+            self.y += 0.4
         if self.fly_up:
-            self.y -= 1.1
+            self.y -= 0.8
 
         self.rect.y = self.y
 

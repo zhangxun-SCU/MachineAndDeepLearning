@@ -13,7 +13,14 @@
       <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/dataset" />
       <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/imgs" />
       <excludeFolder url="file://$MODULE_DIR$/DL/SimpleGAN/model" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/DCGAN/data" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/DCGAN/model" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/DCGAN/output_img" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/DCGAN/output_img/fake" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/DCGAN/output_img/real" />
     </content>
+    <content url="file://$MODULE_DIR$/DL/DCGAN/output_img/fake" />
+    <content url="file://$MODULE_DIR$/DL/DCGAN/output_img/real" />
     <orderEntry type="jdk" jdkName="Python 3.10" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
