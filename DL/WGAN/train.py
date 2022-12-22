@@ -6,19 +6,21 @@ import torchvision
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-from DCGAN import Discriminator, Generator, initialize_weights
+from WGAN import Critical, Generator, initialize_weights
 from dataset import Dataset
 
 # 设置超参数
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-learning_rate = 2e-4
-batch_size = 4
-image_size = 64
+learning_rate = 5e-4
+batch_size = 64
+image_size = 512
 channels_img = 3
 z_dim = 128
-num_epochs = 1000
-features_disc = 64
-features_gen = 64
+num_epochs = 150
+features_disc = 512
+features_gen = 512
+critic_iterations = 5
+weight_clip = 0.01
 
 transforms = transforms.Compose(
     [transforms.Resize([image_size, image_size]),
@@ -31,21 +33,20 @@ transforms = transforms.Compose(
 # disc_path = r'model/Discriminator.ckpt'
 # gen_path = r'model/Generator.ckpt'
 
-dataset = Dataset("data", transforms)
+dataset = Dataset("data/ganyu-final", transforms)
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 
 gen = Generator(z_dim, channels_img, features_gen).to(device)
-disc = Discriminator(channels_img, features_disc).to(device)
+critic = Critical(channels_img, features_disc).to(device)
 
-opt_gen = optim.Adam(gen.parameters(), lr=learning_rate, betas=(0.5, 0.999))
-opt_disc = optim.Adam(disc.parameters(), lr=learning_rate, betas=(0.5, 0.999))
-criterion = nn.BCELoss()
+opt_gen = optim.RMSprop(gen.parameters(), lr=learning_rate)
+opt_critic = optim.RMSprop(critic.parameters(), lr=learning_rate)
 
 fixed_noise = torch.randn(32, z_dim, 1, 1).to(device)
 step = 0
 gen.train()
-disc.train()
+critic.train()
 
 # # if os.path.exists(disc_path):
 # disc.load_state_dict(torch.load("model/Discriminator51.ckpt"))
@@ -57,28 +58,30 @@ disc.train()
 for epoch in range(num_epochs):
     for batch_idx, real in enumerate(dataloader):
         real = real.to(device)
-        noise = torch.randn((batch_size, z_dim, 1, 1)).to(device)
-        fake = gen(noise)
-        # print(fake.shape)
         # 训练disc max log(D(x)) + log(1 - D(G(z)))
-        disc_real = disc(real).reshape(-1)
-        loss_disc_real = criterion(disc_real, torch.ones_like(disc_real))
-        disc_fake = disc(fake).reshape(-1)
-        loss_disc_fake = criterion(disc_fake, torch.zeros_like(disc_fake))
-        loss_disc = (loss_disc_fake + loss_disc_real) / 2
-        disc.zero_grad()
-        loss_disc.backward(retain_graph=True)
-        opt_disc.step()
+        for _ in range(critic_iterations):
+            noise = torch.randn((batch_size, z_dim, 1, 1)).to(device)
+            fake = gen(noise)
+            critic_real = critic(real).reshape(-1)
+            critic_fake = critic(fake).reshape(-1)
+            loss_critic = -(torch.mean(critic_real) - torch.mean(critic_fake))
+            critic.zero_grad()
+            loss_critic.backward(retain_graph=True)
+            opt_critic.step()
+
+            for p in critic.parameters():
+                p.data.clamp_(-weight_clip, weight_clip)
+        # print(fake.shape)
 
         # 训练生成器 min log(1 - D(G(z))) <--> max log(D(G(z)))
-        output = disc(fake).reshape(-1)
-        loss_gen = criterion(output, torch.ones_like(output))
+        output = critic(fake).reshape(-1)
+        loss_gen = -torch.mean(output)
         gen.zero_grad()
         loss_gen.backward()
         opt_gen.step()
 
         if batch_idx == 0:
-            print(f"Epoch [{epoch}/{num_epochs}] Loss D:{loss_disc:.4f} Loss G:{loss_gen:.4f}")
+            print(f"Epoch [{epoch}/{num_epochs}] Loss D:{loss_critic:.4f} Loss G:{loss_gen:.4f}")
             with torch.no_grad():
                 fake = gen(fixed_noise)
                 img_grid_fake = torchvision.utils.make_grid(fake[:32], normalize=True)
@@ -87,7 +90,7 @@ for epoch in range(num_epochs):
                 torchvision.utils.save_image(img_grid_fake, r'output_img/fake/%d.png' % step)
 
                 step = step + 1
-    if epoch % 50 == 0:
-        torch.save(disc.state_dict(), f"model/Discriminator{epoch+1}.ckpt")
-        torch.save(gen.state_dict(), f"model/Generator.{epoch+1}.ckpt")
-        print("model saved")
+
+torch.save(critic.state_dict(), f"model/Discriminator.ckpt")
+torch.save(gen.state_dict(), f"model/Generator.ckpt")
+print("model saved")

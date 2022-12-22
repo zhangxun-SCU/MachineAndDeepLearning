@@ -3,21 +3,20 @@ import torch
 import torch.nn as nn
 
 
-class Discriminator(nn.Module):
+class Critical(nn.Module):
     """判别器"""
     def __init__(self, channels_img, features_d):
-        super(Discriminator, self).__init__()
+        super(Critical, self).__init__()
         self.disc = nn.Sequential(
-            # 输入 N x channels_img x 64 x 64
+            # 输入 N x channels_img x 512 x 512
             nn.Conv2d(
-               channels_img, features_d, kernel_size=4, stride=2, padding=1  # N x feature_d x 32 x 32
+               channels_img, features_d, kernel_size=4, stride=2, padding=1  # N x feature_d x 256 x 256
             ),
             nn.LeakyReLU(0.2),
-            self._block(features_d, features_d*2, 4, 2, 1),  # 16 x 16
-            self._block(features_d*2, features_d * 4, 4, 2, 1),  # 8 x 8
-            self._block(features_d*4, features_d * 8, 4, 2, 1),  # 4 x 4
+            self._block(features_d, features_d*2, 4, 4, 0),  # 64 x 64
+            self._block(features_d*2, features_d * 4, 4, 4, 0),  # 16 x 16
+            self._block(features_d*4, features_d * 8, 4, 4, 0),  # 4 x 4
             nn.Conv2d(features_d*8, 1, kernel_size=4, stride=2, padding=0),  # 1 x 1
-            nn.Sigmoid(),
         )
 
     def _block(self, in_channels, out_channels, kernel_size, stride, padding):
@@ -50,13 +49,11 @@ class Generator(nn.Module):
         super(Generator, self).__init__()
         # 输入 N x z_dim x 1 x 1
         self.gen = nn.Sequential(
-            self._block(z_dim, features_g*32, 4, 1, 0),  # N x f_g*16 x 4 x 4
-            self._block(features_g * 32, features_g * 16, 4, 2, 1),  # 8 x 8
-            self._block(features_g * 16, features_g * 8, 4, 2, 1),  # 16 x 16
-            self._block(features_g * 8, features_g * 4, 3, 1, 1),  # 16 x 16
-
-            self._block(features_g * 4, features_g * 2, 4, 2, 1),  # 32 x 32
-            self._block(features_g * 2, features_g * 1, 3, 1, 1),  # 16 x 16
+            self._block(z_dim, features_g*16, 4, 1, 0),  # N x f_g*16 x 4 x 4
+            self._block(features_g * 16, features_g * 8, 4, 4, 0),  # 16 x 16
+            self._block(features_g * 8, features_g * 4, 4, 4, 0),  # 64 x 64
+            # self._block(features_g * 4, features_g * 2, 4, 2, 1),  # 128 x128
+            self._block(features_g * 2, features_g * 1, 4, 4, 0),  # 256 x 256
             nn.ConvTranspose2d(
                 features_g*1,
                 channels_img,
@@ -92,16 +89,17 @@ def initialize_weights(model):
 
 
 def test():
-    N, in_channels, H, W, = 8, 3, 64, 64
-    z_dim = 100
+    N, in_channels, H, W, = 8, 3, 512, 512
+    z_dim = 128
     x = torch.randn((N, in_channels, H, W))
-    disc = Discriminator(in_channels, 8)
+    disc = Critical(in_channels, 8)
     initialize_weights(disc)
     assert disc(x).shape == (N, 1, 1, 1)
 
     gen = Generator(z_dim, in_channels, 8)
     z = torch.randn((N, z_dim, 1, 1))
-    assert  gen(z).shape == (N, in_channels, H, W)
+    print(gen(z).shape)
+    assert gen(z).shape == (N, in_channels, H, W)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import os
 import torch
 import torchvision
 
-from DCGAN import Generator
+from WGAN import Generator
 
 z_dim = 64 * 64 * 3
 

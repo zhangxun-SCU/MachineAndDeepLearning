@@ -18,6 +18,9 @@
       <excludeFolder url="file://$MODULE_DIR$/DL/DCGAN/output_img" />
       <excludeFolder url="file://$MODULE_DIR$/DL/DCGAN/output_img/fake" />
       <excludeFolder url="file://$MODULE_DIR$/DL/DCGAN/output_img/real" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/WGAN/data" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/WGAN/model" />
+      <excludeFolder url="file://$MODULE_DIR$/DL/WGAN/output_img" />
     </content>
     <content url="file://$MODULE_DIR$/DL/DCGAN/output_img/fake" />
     <content url="file://$MODULE_DIR$/DL/DCGAN/output_img/real" />

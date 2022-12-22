@@ -259,3 +259,7 @@ DL/DCGAN/data/
 DL/DCGAN/output_img
 DL/DCGAN/model
 
+# MT WGAN
+DL/WGAN/data/
+DL/WGAN/output_img/
+DL/WGAN/model/
