@@ -36,7 +36,7 @@ class Critical(nn.Module):
                       stride, padding,
                       bias=False
                       ),
-            nn.BatchNorm2d(out_channels),
+            nn.InstanceNorm2d(out_channels, affine=True),
             nn.LeakyReLU(0.2)
         )
 
@@ -52,10 +52,9 @@ class Generator(nn.Module):
             self._block(z_dim, features_g*16, 4, 1, 0),  # N x f_g*16 x 4 x 4
             self._block(features_g * 16, features_g * 8, 4, 4, 0),  # 16 x 16
             self._block(features_g * 8, features_g * 4, 4, 4, 0),  # 64 x 64
-            # self._block(features_g * 4, features_g * 2, 4, 2, 1),  # 128 x128
-            self._block(features_g * 2, features_g * 1, 4, 4, 0),  # 256 x 256
+            self._block(features_g * 4, features_g * 2, 4, 4, 0),  # 256 x 256
             nn.ConvTranspose2d(
-                features_g*1,
+                features_g*2,
                 channels_img,
                 kernel_size=4,
                 stride=2,

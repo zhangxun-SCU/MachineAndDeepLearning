@@ -3,10 +3,10 @@ import torch
 import torch.nn as nn
 
 
-class Discriminator(nn.Module):
+class Critical(nn.Module):
     """判别器"""
     def __init__(self, channels_img, features_d):
-        super(Discriminator, self).__init__()
+        super(Critical, self).__init__()
         self.disc = nn.Sequential(
             # 输入 N x channels_img x 64 x 64
             nn.Conv2d(
@@ -17,7 +17,6 @@ class Discriminator(nn.Module):
             self._block(features_d*2, features_d * 4, 4, 2, 1),  # 8 x 8
             self._block(features_d*4, features_d * 8, 4, 2, 1),  # 4 x 4
             nn.Conv2d(features_d*8, 1, kernel_size=4, stride=2, padding=0),  # 1 x 1
-            nn.Sigmoid(),
         )
 
     def _block(self, in_channels, out_channels, kernel_size, stride, padding):
@@ -37,7 +36,7 @@ class Discriminator(nn.Module):
                       stride, padding,
                       bias=False
                       ),
-            nn.BatchNorm2d(out_channels),
+            nn.InstanceNorm2d(out_channels),
             nn.LeakyReLU(0.2)
         )
 
@@ -50,13 +49,13 @@ class Generator(nn.Module):
         super(Generator, self).__init__()
         # 输入 N x z_dim x 1 x 1
         self.gen = nn.Sequential(
-            self._block(z_dim, features_g * 16, 4, 2, 1),  # 4 x 4
+            self._block(z_dim, features_g * 16, 4, 2, 0),  # 4 x 4
             self._block(features_g * 16, features_g * 8, 4, 2, 1),  # 8 x 8
             self._block(features_g * 8, features_g * 4, 4, 2, 1),  # 16 x 16
             self._block(features_g * 4, features_g * 2, 4, 2, 1),  # 32 x 32
-            self._block(features_g * 2, features_g * 1, 4, 2, 1),  # 16 x 16
+            # self._block(features_g * 2, features_g * 1, 4, 2, 1),
             nn.ConvTranspose2d(
-                features_g*1,
+                features_g*2,
                 channels_img,
                 kernel_size=4,
                 stride=2,
@@ -93,8 +92,10 @@ def test():
     N, in_channels, H, W, = 8, 3, 64, 64
     z_dim = 128
     x = torch.randn((N, in_channels, H, W))
-    disc = Discriminator(in_channels, 8)
+    disc = Critical(in_channels, 64)
     initialize_weights(disc)
+    print(disc(x).shape)
+
     assert disc(x).shape == (N, 1, 1, 1)
 
     gen = Generator(z_dim, in_channels, 8)
