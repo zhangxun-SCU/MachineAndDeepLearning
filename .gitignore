@@ -263,3 +263,8 @@ DL/DCGAN/model
 DL/WGAN/data/
 DL/WGAN/output_img/
 DL/WGAN/model/
+
+# My CycleGAN
+DL/CycleGAN/dataset/
+DL/CycleGAN/model/
+DL/CycleGAN/output_img/
