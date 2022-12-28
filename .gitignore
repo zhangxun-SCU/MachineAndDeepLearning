@@ -268,3 +268,8 @@ DL/WGAN/model/
 DL/CycleGAN/dataset/
 DL/CycleGAN/model/
 DL/CycleGAN/output_img/
+
+# DL/human2anime
+human2anime/dataset/
+human2anime/model
+human2anime/output_img/
